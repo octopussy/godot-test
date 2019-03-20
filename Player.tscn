@@ -34,7 +34,9 @@ scale = Vector2( 0.5, 0.5 )
 frames = SubResource( 1 )
 animation = "right"
 
-[node name="CollisionShape2D" type="CollisionShape2D" parent="."]
+[node name="Collision" type="CollisionShape2D" parent="."]
 shape = SubResource( 2 )
+
+[node name="Trail" type="CPUParticles2D" parent="."]
 
 [connection signal="body_entered" from="." to="." method="_on_Player_body_entered"]

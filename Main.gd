@@ -3,6 +3,8 @@ extends Node
 export (PackedScene) var Mob
 var score
 
+var isGameInProgress := false
+
 func _ready():
     randomize()
     #new_game()
@@ -15,8 +17,11 @@ func new_game():
     $HUD.update_score(score)
     $HUD.show_message("Get Ready")
     $Music.play()
+    isGameInProgress = true
 
 func game_over():
+    if !isGameInProgress: return
+    isGameInProgress = false
     print("Game Over")
     $ScoreTimer.stop()
     $MobTimer.stop()

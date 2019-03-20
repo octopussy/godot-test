@@ -17,6 +17,7 @@ script = ExtResource( 1 )
 Mob = ExtResource( 2 )
 
 [node name="ColorRect" type="ColorRect" parent="."]
+visible = false
 margin_right = 480.0
 margin_bottom = 720.0
 color = Color( 0, 0, 0, 1 )
@@ -47,9 +48,11 @@ rotation = 1.5708
 [node name="HUD" parent="." instance=ExtResource( 4 )]
 
 [node name="Music" type="AudioStreamPlayer2D" parent="."]
+position = Vector2( 240, 386 )
 stream = ExtResource( 5 )
 
 [node name="DeathSound" type="AudioStreamPlayer2D" parent="."]
+position = Vector2( 240, 386 )
 stream = ExtResource( 6 )
 
 [connection signal="timeout" from="MobTimer" to="." method="_on_MobTimer_timeout"]

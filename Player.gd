@@ -1,48 +1,61 @@
 extends Area2D
 
-export var speed = 400  # How fast the player will move (pixels/sec).
-var screen_size  # Size of the game window.
-
 signal hit
 
+var speed : = 400
+var velocity = Vector2()
+var acceleration := 0.0
+var screensize
+# Add this variable to hold the clicked position.
+var target = Vector2()
+
 func _ready():
-    screen_size = get_viewport_rect().size
+    hide()
+    screensize = get_viewport_rect().size
+
+func start(pos):
+    position = pos
+    # Initial target is the start position.
+    target = pos
+    show()
+    $Collision.disabled = false
+
+# Change the target whenever a touch event happens.
+func _input(event):
+    if event is InputEventScreenTouch and event.pressed:
+        target = event.position
 
 func _process(delta):
-    var velocity = Vector2()  # The player's movement vector.
-    if Input.is_action_pressed("ui_right"):
-        velocity.x += 1
-    if Input.is_action_pressed("ui_left"):
-        velocity.x -= 1
-    if Input.is_action_pressed("ui_down"):
-        velocity.y += 1
-    if Input.is_action_pressed("ui_up"):
-        velocity.y -= 1
+    var distance_to_target = position.distance_to(target)
+    var vector_to_target = target - position
+    if distance_to_target > 10:
+        velocity = vector_to_target.normalized() * speed
+    else:
+        velocity = Vector2()
+
     if velocity.length() > 0:
         velocity = velocity.normalized() * speed
         $AnimatedSprite.play()
+        $Trail.emitting = true
     else:
         $AnimatedSprite.stop()
+        $Trail.emitting = false
+
+    position += velocity * delta
+    # We don't need to clamp the player's position
+    # because you can't click outside the screen.
+    # position.x = clamp(position.x, 0, screensize.x)
+    # position.y = clamp(position.y, 0, screensize.y)
 
     if velocity.x != 0:
         $AnimatedSprite.animation = "right"
         $AnimatedSprite.flip_v = false
-        # See the note below about boolean assignment
         $AnimatedSprite.flip_h = velocity.x < 0
     elif velocity.y != 0:
         $AnimatedSprite.animation = "up"
         $AnimatedSprite.flip_v = velocity.y > 0
 
-    position += velocity * delta
-    position.x = clamp(position.x, 0, screen_size.x)
-    position.y = clamp(position.y, 0, screen_size.y)
-
-func start(pos):
-    position = pos
-    show()
-    $CollisionShape2D.disabled = false
-
-func _on_Player_body_entered(body):
-    hide()  # Player disappears after being hit.
+func _on_Player_body_entered( body ):
+    $Collision.disabled = true
+    hide()
     emit_signal("hit")
-    $CollisionShape2D.call_deferred("set_disabled", true)
