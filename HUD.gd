@@ -1,6 +1,7 @@
 extends CanvasLayer
 
 signal start_game
+signal show_interstitial
 
 func show_message(text):
     $MessageLabel.text = text
@@ -25,3 +26,7 @@ func _on_StartButton_pressed():
     $StartButton.hide()
     $MessageLabel.hide()
     emit_signal("start_game")
+
+
+func _on_Button_pressed() -> void:
+    emit_signal("show_interstitial")

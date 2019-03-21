@@ -1,4 +1,4 @@
-[gd_scene load_steps=8 format=2]
+[gd_scene load_steps=10 format=2]
 
 [ext_resource path="res://Main.gd" type="Script" id=1]
 [ext_resource path="res://Mob.tscn" type="PackedScene" id=2]
@@ -6,6 +6,8 @@
 [ext_resource path="res://HUD.tscn" type="PackedScene" id=4]
 [ext_resource path="res://art/House In a Forest Loop.ogg" type="AudioStream" id=5]
 [ext_resource path="res://art/gameover.wav" type="AudioStream" id=6]
+[ext_resource path="res://Character.tscn" type="PackedScene" id=7]
+[ext_resource path="res://Wizzard.gd" type="Script" id=8]
 
 [sub_resource type="Curve2D" id=1]
 _data = {
@@ -55,8 +57,46 @@ stream = ExtResource( 5 )
 position = Vector2( 240, 386 )
 stream = ExtResource( 6 )
 
+[node name="Character" parent="." instance=ExtResource( 7 )]
+position = Vector2( 30, 30 )
+script = ExtResource( 8 )
+
+[node name="Hat" type="ColorRect" parent="Character"]
+margin_right = 40.0
+margin_bottom = 20.0
+color = Color( 1, 0.0117647, 0.0117647, 1 )
+
+[node name="CanvasLayer" type="CanvasLayer" parent="."]
+
+[node name="VBoxContainer" type="VBoxContainer" parent="CanvasLayer"]
+margin_right = 180.0
+margin_bottom = 140.0
+alignment = 1
+
+[node name="ShowInterstitialButton" type="Button" parent="CanvasLayer/VBoxContainer"]
+margin_top = 36.0
+margin_right = 180.0
+margin_bottom = 56.0
+text = "Interstitial"
+
+[node name="ShowBannerButton" type="Button" parent="CanvasLayer/VBoxContainer"]
+margin_top = 60.0
+margin_right = 180.0
+margin_bottom = 80.0
+text = "Banner"
+
+[node name="ShowVideoButton" type="Button" parent="CanvasLayer/VBoxContainer"]
+margin_top = 84.0
+margin_right = 180.0
+margin_bottom = 104.0
+text = "Video"
+
 [connection signal="timeout" from="MobTimer" to="." method="_on_MobTimer_timeout"]
 [connection signal="timeout" from="ScoreTimer" to="." method="_on_ScoreTimer_timeout"]
 [connection signal="timeout" from="StartTimer" to="." method="_on_StartTimer_timeout"]
 [connection signal="hit" from="Player" to="." method="game_over"]
+[connection signal="show_interstitial" from="HUD" to="." method="_on_HUD_show_interstitial"]
 [connection signal="start_game" from="HUD" to="." method="start_game"]
+[connection signal="pressed" from="CanvasLayer/VBoxContainer/ShowInterstitialButton" to="." method="_on_ShowInterstitialButton_pressed"]
+[connection signal="pressed" from="CanvasLayer/VBoxContainer/ShowBannerButton" to="." method="_on_ShowBannerButton_pressed"]
+[connection signal="pressed" from="CanvasLayer/VBoxContainer/ShowVideoButton" to="." method="_on_ShowVideoButton_pressed"]
